@@ -44,7 +44,7 @@ done
 echo "Se creó la carpeta '$carpeta' con $x subcarpetas."
 }
 punto_8_segunda_parte(){
-    for sub in "hola"/subcarpeta_*; do #el dato hola puede ser remplazado por el nombre de la carpeta introducida en la funcion anterior
+    for sub in "$carpeta"/subcarpeta_*; do #el dato hola puede ser remplazado por el nombre de la carpeta introducida en la funcion anterior
     for file in "$sub"/*.txt; do
         nombre=$(basename "$file" .txt)   
         if (( nombre % 2 == 0 )); then    
@@ -55,4 +55,46 @@ punto_8_segunda_parte(){
     done
 done
 }
+punto_9a(){
+    carpeta=$1
+for archivo in "$carpeta"/*; do
+    if [ -f "$archivo" ]; then
+        tamano=$(du -h "$archivo" | cut -f1)
+        echo "Archivo: $(basename "$archivo") → Tamaño: $tamano"
+    fi
+done
+}
+punto_9b(){
+    carpeta=$1
+    for subcarpeta in "$carpeta"/*; do
+    if [ -d "$subcarpeta" ]; then
+        cantidad_archivos=$(find "$subcarpeta" -type f | wc -l)
+        echo "Subcarpeta: $(basename "$subcarpeta") → Archivos: $cantidad_archivos"
+    fi
+done
+total_subcarpetas=$(find "$carpeta" -mindepth 1 -type d | wc -l)
+echo "Cantidad total de subcarpetas: $total_subcarpetas"
+}
+punto_9c(){
+    carpeta=$1
+tar -czvf "${carpeta}.tar.gz" "$carpeta"
+echo "Carpeta comprimida en: ${carpeta}.tar.gz"
+}
+punto_9d(){
+    carpeta=$1
+find "$carpeta" -type f -mtime -1
+}
+punto_9e(){
+    carpeta=$1
+tamano=$2
 
+resultado=$(find "$carpeta" -type f -size +"${tamano}M")
+if [ -z "$resultado" ]; then
+    echo "ningun comando es mas grande que $tamano megas"
+else
+    echo "los archivos con mas de $tamano megas en $carpeta son: "
+    echo "$resultado"
+fi
+}
+punto_9e hola 1
+#recordar que las funciones desde la 8 segunda parte se le deben enviar parametros
